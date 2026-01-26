@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "groq-voice-transcriber"
+version = "0.1.0"
+description = "Fast, privacy-first voice transcription using Groq with built-in audio compression"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+dependencies = [
+  "requests>=2.31.0"
+]
+
+[project.scripts]
+groq-transcribe = "groq_voice_transcriber.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
