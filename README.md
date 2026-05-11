@@ -1,16 +1,17 @@
 # Groq Voice Transcriber
 
-Voice is still the most natural way people communicate. In real estate and construction, teams speak constantly: site inspections, defect walkthroughs, progress meetings, handovers. Those recordings are useful, but listening back takes time and makes follow-up harder.
+A small command-line tool that takes audio files (voice memos, podcasts, lectures, interviews, recorded ideas) and turns them into clean, searchable text using Groq's Whisper API. It handles compression and chunking automatically so large files don't fail on upload.
 
-Rather than investing in expensive transcription hardware, gadgets or costly monthly subscriptions, this tool leverages the free Groq API within a simple and privacy-first workflow. It takes any audio file, compresses it only if needed to fit the upload limit, and then sends it to Groq for transcription. The output is a clean and searchable text file that you can paste directly into any AI platform/app for summaries, key points, or to-do list.
+## Why I built this
+I had voice memos and recorded notes piling up that I never went back to listen to. Transcribing them manually was tedious, and most transcription services charge a monthly fee or limit file sizes in awkward ways for longer recordings. Groq offers a free Whisper API tier with fast turnaround, so this script wraps it in a simple CLI and handles the file-size gymnastics so I don't have to think about them.
 
 ## Why Groq and LPU
 
 Groq runs inference on a Language Processing Unit (LPU), a processor built specifically for serving large language and speech models with predictable, low latency. GPUs are excellent general-purpose accelerators (and are essential for training), but serving inference at scale can be less predictable due to batching, scheduling, and memory pressure. LPUs are designed for consistent, high-throughput inference, which is exactly what fast transcription needs.
 
-The result: near-instant transcriptions at high throughput. Groq also offers a free API tier, which makes this tool accessible without heavy infrastructure costs.
+The result is near-instant transcriptions at high throughput. Groq also offers a free API tier, which makes this tool accessible without heavy infrastructure costs.
 
-## What This Tool Does
+## What this tool does
 
 - Accepts a single audio file or a folder of files
 - Compresses/transcodes first, and only chunks when needed to stay within Groq upload limits
@@ -67,7 +68,7 @@ groq-transcribe <file-or-folder> \
 Examples:
 
 ```bash
-groq-transcribe "./audio/site-walkthrough.mp3"
+groq-transcribe "./audio/recording.mp3"
 ```
 
 ```bash
@@ -75,10 +76,10 @@ groq-transcribe "./audio" --recursive --lang zh
 ```
 
 ```bash
-groq-transcribe "./meeting.m4a" --model whisper-large-v3-turbo
+groq-transcribe "./voice-memo.m4a" --model whisper-large-v3-turbo
 ```
 
-## How Compression and Chunking Work
+## How compression and chunking work
 
 Groq free-tier uploads are capped at 25 MB. This tool uses a default limit of 24 MB to stay safely under that cap.
 
@@ -103,11 +104,11 @@ All results go to `out/`:
 
 For folder runs, the output path mirrors the input folder structure to avoid name collisions.
 
-## Privacy and Security
+## Things to be aware of
 
+- This tool sends audio to Groq's API. Don't run it on audio you're not free to share with a third party. Check Groq's data handling terms for your tier before using it on anything sensitive.
 - API keys are read from `GROQ_API_KEY` only; never hardcode keys.
-- The `.gitignore` ignores `.env`, `out/`, and common audio formats by default to prevent accidental leaks.
-- Do not upload audio you are not allowed to share with a third-party API.
+- The `.gitignore` excludes `.env`, `out/`, and common audio formats by default.
 
 ## Troubleshooting
 
@@ -121,6 +122,13 @@ For folder runs, the output path mirrors the input folder structure to avoid nam
 - Groq supports `whisper-large-v3` and `whisper-large-v3-turbo` for transcription.
 - The free tier file upload limit is 25 MB. Large files are automatically chunked after compression attempts.
 
-## License
+## Acknowledgments
+This tool builds on the following projects and services:
 
-MIT
+- [Groq](https://groq.com) for the Whisper API and free tier
+- [OpenAI Whisper](https://github.com/openai/whisper) (MIT) as the underlying speech model
+- [FFmpeg](https://ffmpeg.org) (LGPL or GPL) for audio compression and chunking
+- [requests](https://github.com/psf/requests) (Apache 2.0) for HTTP
+
+## License
+MIT. See `LICENSE`.
